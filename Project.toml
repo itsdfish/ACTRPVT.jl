@@ -1,7 +1,7 @@
 name = "ACTRPVT"
 uuid = "27403de4-b1c2-4c44-95d8-36d2b6bff33e"
 authors = ["itsdfish"]
-version = "0.0.1"
+version = "0.1.0"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"

@@ -1,7 +1,7 @@
 name = "ACTRPVT"
 uuid = "27403de4-b1c2-4c44-95d8-36d2b6bff33e"
 authors = ["itsdfish"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -11,6 +11,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
 Distributions = "0.25.0"
+Random = "1"
 SafeTestsets = "0.0.1,0.1.0"
 Statistics = "1.0.0"
 julia = "1"

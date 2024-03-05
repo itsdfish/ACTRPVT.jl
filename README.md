@@ -16,7 +16,7 @@ parms = (
     λ = .98, # micro-lapse utility decrement
     γ = .04  # mean conflict resolution time 
 )
-isi,rts = rand(PVTModel(;parms...), 10_000)
+rts = rand(PVTModel(;parms...), 10_000)
 ```
 
 ## Installation

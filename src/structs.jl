@@ -35,7 +35,7 @@ A constructor for the ACT-R PVT model.
 - `λ`: utility microlapse decrement
 - `γ`: mean conflict resolution time 
 """
-function PVTModel(;υ, τ, λ, γ)
+function PVTModel(; υ, τ, λ, γ)
     return PVTModel(υ, τ, λ, γ)
 end
 

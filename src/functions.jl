@@ -16,13 +16,12 @@ Simulates `n_trials` of reaction times for the ACT-R PVT Model
 -`isi_fun = () -> rand(2:10)`: function for generating inter-stimulus interval 
 """
 function rand(dist::PVTModel, n_trials::Int; isi_fun = () -> rand(2:10))
-    (;υ, τ, λ, γ) = dist
+    (; υ, τ, λ, γ) = dist
     rts = zeros(n_trials)
-    isi = fill(0, n_trials)
-    for t in 1:n_trials
-        isi[t],rts[t] = simulate_trial(υ, τ, λ, γ; isi_fun)
+    for t = 1:n_trials
+        rts[t] = simulate_trial(υ, τ, λ, γ; isi_fun)
     end
-    return isi,rts
+    return rts
 end
 
 """
@@ -43,7 +42,7 @@ Simulates a single trial for the ACT-R PVT Model
 -`isi_fun = () -> rand(2:10)`: function for generating inter-stimulus interval 
 """
 function rand(dist::PVTModel; isi_fun = () -> rand(2:10))
-    (;υ, τ, λ, γ) = dist
+    (; υ, τ, λ, γ) = dist
     return simulate_trial(υ, τ, λ, γ; isi_fun)
 end
 
@@ -59,10 +58,10 @@ function simulate_trial(υ, τ, λ, γ; isi_fun = () -> rand(2:10))
     ub = isi + 10 ##point at which trial terminates [10 seconds]
 
     while (state == 1) && (t < ub) ##signal present
-        if t ≤ isi 
-            utility =  υ * λ^n_ml * [1.0,  0.0] .+ rand(Logistic(0.0, s), 2)
+        if t ≤ isi
+            utility = υ * λ^n_ml * [1.0, 0.0] .+ rand(Logistic(0.0, s), 2)
             t += rand_time(γ)  ## duration of conflict resolution
-            max_util,max_idx = findmax(utility) ##conflict resolution
+            max_util, max_idx = findmax(utility) ##conflict resolution
             if max_util < τ ##no production exceeds threshold
                 n_ml += 1 ## increase microlapse count
             elseif max_idx == 2 ## respond utility exceeds threshold
@@ -78,9 +77,9 @@ function simulate_trial(υ, τ, λ, γ; isi_fun = () -> rand(2:10))
     # reset microlapse count 
     n_ml = 0
     while (state == 2) && (t < ub) ##signal present
-        utility =  υ * λ^n_ml * [1.0,  0.0] .+ rand(Logistic(0.0, s), 2)
+        utility = υ * λ^n_ml * [1.0, 0.0] .+ rand(Logistic(0.0, s), 2)
         t += rand_time(γ)  ## duration of conflict resolution
-        max_util,max_idx = findmax(utility) ##conflict resolution
+        max_util, max_idx = findmax(utility) ##conflict resolution
         if max_util < τ ##no production exceeds threshold
             n_ml += 1 ## increase microlapse count
         elseif max_idx == 1 ## attend utility exceeds threshold
@@ -93,7 +92,7 @@ function simulate_trial(υ, τ, λ, γ; isi_fun = () -> rand(2:10))
     end
 
     while (state == 3) && (t < ub) ## encoding complete
-        utility = υ*λ^n_ml + rand(Logistic(0.0, s))
+        utility = υ * λ^n_ml + rand(Logistic(0.0, s))
         t += rand_time(γ) ## duration of conflict resolution
         if utility < τ ## no production exceeds threshold
             n_ml += 1 ## increase microlapse count
@@ -102,7 +101,7 @@ function simulate_trial(υ, τ, λ, γ; isi_fun = () -> rand(2:10))
             t += rand_time(r_time)
         end
     end
-    return isi,t - isi
+    return t - isi
 end
 
 """

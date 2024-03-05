@@ -6,5 +6,5 @@ using Pkg
 using Revise
 Pkg.activate("..")
 using ACTRPVT
-parms = (υ=4.0, τ=3.5, λ=.98, γ=.04)
-isi,rts = rand(PVTModel(;parms...), 10_000)
+parms = (υ = 4.0, τ = 3.5, λ = 0.98, γ = 0.04)
+isi, rts = rand(PVTModel(; parms...), 10_000)

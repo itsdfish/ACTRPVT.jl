@@ -24,4 +24,4 @@ makedocs(
     ]
 )
 
-deploydocs(repo = "https://github.com/itsdfish/ACTRPVT.jl.git")
+deploydocs(repo = "github.com/itsdfish/ACTRPVT.jl.git")

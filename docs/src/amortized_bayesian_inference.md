@@ -1,3 +1,6 @@
+!!! note "Warning"
+    Docs are a work in progress.
+
 # Introduction 
 
 This page demonstrates how to perform amortized Bayesian inference using neural networks. Click below to reveal a full copy-and-pastable version of the code.
@@ -22,8 +25,8 @@ w = 128         # width of each hidden layer
 
 function sample(K)
     υτ = rand(MvNormal([5, 4], [4 2; 2 4]), K)
-    λ = rand(Beta(98, 2), K)
-    γ = rand(truncated(Normal(.04, .01),0, Inf), K)
+    λ = rand(Beta(25, .5), K)
+    γ = rand(truncated(Normal(.04, .015),.01, Inf), K)
     θ = vcat(υτ, λ' , γ')
     return θ
 end
@@ -47,30 +50,32 @@ trained_estimator = train(
     sample, 
     simulate; 
     m, 
-    epochs = 20,
-    K = 10_000
+    epochs = 30,
+    K = 15_000
 )
 
 # Assess the estimator
 θ_test = sample(1000)
 Z_test = simulate(θ_test, m)
-assessment = assess(trained_estimator, θ_test, Z_test)
+assessment = assess(trained_estimator, θ_test, Z_test; parameter_names = ["υ", "τ", "λ", "γ"])
 bias(assessment)  
 rmse(assessment) 
 AlgebraOfGraphics.plot(assessment)
 
+
 # Apply the estimator to observed data
-θ = [5,3,.99,.041]       # true parameters
-Z = simulate(θ, m)       # "observed" data
+title = ["υ" "τ" "λ" "γ"]
+θ = [5,3,.97,.05]       # true parameters
+Z = simulate(θ, m)      # "observed" data
 post_samples = sampleposterior(trained_estimator, Z)
-Plots.histogram(post_samples', layout = (4,1), norm = true, leg = false, title = ["υ" "τ" "λ" "γ"])
+Plots.histogram(post_samples'; layout = (4,1), norm = true, leg = false, title)
 vline!([θ'], color = :red)
 
 # Apply the estimator to observed data
-θ = [2,3,.96,.031]       # true parameters
-Z = simulate(θ, m)       # "observed" data
+θ = [3,4,.98,.03]       # true parameters
+Z = simulate(θ, m)      # "observed" data
 post_samples = sampleposterior(trained_estimator, Z)
-Plots.histogram(post_samples', layout = (4,1), norm = true, leg = false, title = ["υ" "τ" "λ" "γ"])
+Plots.histogram(post_samples'; layout = (4,1), norm = true, leg = false, title)
 vline!([θ'], color = :red)
 ```
 ```@raw html
@@ -98,8 +103,8 @@ w = 128         # width of each hidden layer
 ```julia
 function sample(K)
     υτ = rand(MvNormal([5, 4], [4 2; 2 4]), K)
-    λ = rand(Beta(98, 2), K)
-    γ = rand(truncated(Normal(.04, .01),0, Inf), K)
+    λ = rand(Beta(25, .5), K)
+    γ = rand(truncated(Normal(.04, .015),.01, Inf), K)
     θ = vcat(υτ, λ' , γ')
     return θ
 end
@@ -129,36 +134,40 @@ trained_estimator = train(
     sample, 
     simulate; 
     m, 
-    epochs = 20,
-    K = 10_000
+    epochs = 30,
+    K = 15_000
 )
 ```
 # Assess the estimator
 ```julia
 θ_test = sample(1000)
 Z_test = simulate(θ_test, m)
-assessment = assess(trained_estimator, θ_test, Z_test)
+assessment = assess(trained_estimator, θ_test, Z_test; parameter_names = ["υ", "τ", "λ", "γ"])
 bias(assessment)  
 rmse(assessment) 
 AlgebraOfGraphics.plot(assessment)
 ```
+![](assets/recovery.png)
+
 # Estimate the Posterior Distributions
 
 The examples below estimate the posterior distributions using data generated from two different sets of parameters. The vertical red lines in each sub-plot indicate the ground truth parameter values. 
 
 ```julia
-θ = [5,3,.99,.041]       # true parameters
-Z = simulate(θ, m)       # "observed" data
+title = ["υ" "τ" "λ" "γ"]
+θ = [5,3,.97,.05]       # true parameters
+Z = simulate(θ, m)      # "observed" data
 post_samples = sampleposterior(trained_estimator, Z)
-Plots.histogram(post_samples', layout = (4,1), norm = true, leg = false, title = ["υ" "τ" "λ" "γ"])
+Plots.histogram(post_samples'; layout = (4,1), norm = true, leg = false, title)
 vline!([θ'], color = :red)
 ```
 ![](assets/posterior1.png)
 ```julia
-θ = [2,3,.96,.031]       # true parameters
-Z = simulate(θ, m)       # "observed" data
+θ = [3,4,.98,.03]       # true parameters
+Z = simulate(θ, m)      # "observed" data
 post_samples = sampleposterior(trained_estimator, Z)
-Plots.histogram(post_samples', layout = (4,1), norm = true, leg = false, title = ["υ" "τ" "λ" "γ"])
+Plots.histogram(post_samples'; layout = (4,1), norm = true, leg = false, title)
 vline!([θ'], color = :red)
+
 ```
 ![](assets/posterior2.png)

@@ -21,7 +21,7 @@ using SafeTestsets
         0.52117,
         0.59382,
         0.7011,
-        0.90495,
+        0.90495
     ]
     @test qs ≈ true_qs rtol = 1e-2
 end
